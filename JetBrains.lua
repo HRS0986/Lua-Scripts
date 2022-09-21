@@ -2,15 +2,17 @@ function OnEvent(event, arg)
     debug = false
     
     -- Disable All These Buttons In GHub
-    FwdBtn = 5
-    BckBtn = 4
-    UpBtn = 8
-    DownBtn = 7
-    LeftScroll = 11
-    RightScroll = 10
-    GBtn = 6
-    ProfileBtn = 9
-    MidBtn = 3
+    Buttons = {
+        Foward = 5,
+        Bacward = 4,
+        up = 8,
+        Down = 7,
+        LeftScroll = 11,
+        RightScroll = 10,
+        G = 6,
+        Profile = 9,
+        Mid = 3
+    }
 
     ShortClickDelay = 350
     LongClickDelay = 1000
@@ -18,7 +20,7 @@ function OnEvent(event, arg)
     MOUSE_CLICK = "MOUSE_BUTTON_PRESSED"
     MOUSE_RELEASED = "MOUSE_BUTTON_RELEASED"
 
-    if arg == GBtn then
+    if arg == Buttons.G then
         if event == MOUSE_CLICK then
             PressedTime = GetRunningTime()
             ClickDuration = nil
@@ -40,7 +42,7 @@ function OnEvent(event, arg)
         end
         return
 
-    elseif arg == ProfileBtn then
+    elseif arg == Buttons.Profile then
         if event == MOUSE_CLICK then
             PressedTime = GetRunningTime()
             ClickDuration = nil
@@ -62,7 +64,7 @@ function OnEvent(event, arg)
         end
         return
 
-    elseif arg == MidBtn then
+    elseif arg == Buttons.Mid then
         if event == MOUSE_CLICK then
             PressedTime = GetRunningTime()
             ClickDuration = nil
@@ -80,7 +82,7 @@ function OnEvent(event, arg)
         end
         return
 
-    elseif arg == FwdBtn then
+    elseif arg == Buttons.Foward then
         if event == MOUSE_CLICK then
             PressedTime = GetRunningTime()
             ClickDuration = nil
@@ -98,7 +100,7 @@ function OnEvent(event, arg)
         end
         return
 
-    elseif arg == BckBtn then
+    elseif arg == Buttons.Bacward then
         if event == MOUSE_CLICK then
             PressedTime = GetRunningTime()
             ClickDuration = nil
@@ -116,7 +118,7 @@ function OnEvent(event, arg)
         end
         return
 
-    elseif arg == UpBtn then
+    elseif arg == Buttons.Up then
         if event == MOUSE_CLICK then
             PressedTime = GetRunningTime()
             ClickDuration = nil
@@ -134,7 +136,7 @@ function OnEvent(event, arg)
         end
         return
 
-    elseif arg == DownBtn then
+    elseif arg == Buttons.Down then
         if event == MOUSE_CLICK then
             PressedTime = GetRunningTime()
             ClickDuration = nil
