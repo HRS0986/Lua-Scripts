@@ -1,3 +1,9 @@
+FirstClickTimeStamp, SecondClickTimeStamp = 0, 0
+DoubleClickDuration = 0
+
+
+
+
 function OnEvent(event, arg)    
     debug = false
     
@@ -5,7 +11,7 @@ function OnEvent(event, arg)
     Buttons = {
         Foward = 5,
         Bacward = 4,
-        up = 8,
+        Up = 8,
         Down = 7,
         LeftScroll = 11,
         RightScroll = 10,
@@ -14,8 +20,9 @@ function OnEvent(event, arg)
         Mid = 3
     }
 
-    ShortClickDelay = 350
-    LongClickDelay = 1000
+    SHORT_DELAY = 350
+    LONG_DELAY = 1000
+    DOUBLE_CLICK_DELAY = 200
 
     MOUSE_CLICK = "MOUSE_BUTTON_PRESSED"
     MOUSE_RELEASED = "MOUSE_BUTTON_RELEASED"
@@ -28,11 +35,11 @@ function OnEvent(event, arg)
             ClickDuration = GetRunningTime() - PressedTime
 
             -- Find All
-            if ClickDuration < ShortClickDelay then
+            if ClickDuration < SHORT_DELAY then
                 PlayMacro("Find All")
             
             -- Shutdown
-            elseif ClickDuration >= LongClickDelay then
+            elseif ClickDuration >= LONG_DELAY then
                 PlayMacro("Shutdown")
                 
             -- Take SS
@@ -50,11 +57,11 @@ function OnEvent(event, arg)
             ClickDuration = GetRunningTime() - PressedTime
 
             -- Format Code
-            if ClickDuration < ShortClickDelay then
+            if ClickDuration < SHORT_DELAY then
                 PlayMacro("Format Code")
             
                 -- Mute
-            elseif ClickDuration >= LongClickDelay then
+            elseif ClickDuration >= LONG_DELAY then
                 PlayMacro("Mute")
                 
             -- Play / Pause
@@ -72,7 +79,7 @@ function OnEvent(event, arg)
             ClickDuration = GetRunningTime() - PressedTime
 
             -- Goto Implementation
-            if ClickDuration < ShortClickDelay then
+            if ClickDuration < SHORT_DELAY then
                 PlayMacro("Goto Implementation")        
             
             -- Goto Overriding
@@ -90,7 +97,7 @@ function OnEvent(event, arg)
             ClickDuration = GetRunningTime() - PressedTime
 
             -- Go Foward
-            if  ClickDuration < ShortClickDelay then
+            if  ClickDuration < SHORT_DELAY then
                 PlayMacro("Go Foward")
             
             -- Copy
@@ -108,7 +115,7 @@ function OnEvent(event, arg)
             ClickDuration = GetRunningTime() - PressedTime
 
             -- Go Back
-            if ClickDuration < ShortClickDelay then
+            if ClickDuration < SHORT_DELAY then
                 PlayMacro("Go Back")
 
             -- Paste
@@ -123,16 +130,22 @@ function OnEvent(event, arg)
             PressedTime = GetRunningTime()
             ClickDuration = nil
         elseif event == MOUSE_RELEASED then
-            ClickDuration = GetRunningTime() - PressedTime
-
-            -- Comment Code
-            if ClickDuration < ShortClickDelay then
-                PlayMacro("Comment")
-
-            -- Next Track
+            IsDoubleClicked = IsDoubleClick()
+            if IsDoubleClicked then
+                PlayMacro("Find Files")
             else
-                PlayMacro("Next Track")
+                ClickDuration = GetRunningTime() - PressedTime
+    
+                -- Comment Code
+                if ClickDuration < SHORT_DELAY then
+                    PlayMacro("Comment")
+    
+                -- Next Track
+                else
+                    PlayMacro("Next Track")
+                end
             end
+
         end
         return
 
@@ -144,7 +157,7 @@ function OnEvent(event, arg)
             ClickDuration = GetRunningTime() - PressedTime
 
             -- Duplicate Selection
-            if ClickDuration < ShortClickDelay then
+            if ClickDuration < SHORT_DELAY then
                 PlayMacro("Duplicate Selection")
 
             -- Previous Track
@@ -154,4 +167,19 @@ function OnEvent(event, arg)
         end
         return
     end
+end
+
+function IsDoubleClick()
+    OutputLogMessage("Short click : Next Track\n")
+
+    local isDoubleClicked = false
+    if FirstClickTimeStamp == 0 then
+        FirstClickTimeStamp = GetRunningTime()
+    else
+        SecondClickTimeStamp = GetRunningTime()
+        DoubleClickDuration = SecondClickTimeStamp - FirstClickTimeStamp
+        isDoubleClicked = DoubleClickDuration <= DOUBLE_CLICK_DELAY
+        DoubleClickDuration, FirstClickTimeStamp, SecondClickTimeStamp = 0, 0, 0
+    end
+    return isDoubleClicked
 end

@@ -18,7 +18,7 @@ function OnEvent(event, arg)
 	gButtonDeltaShutdown = 1000 -- Time to register a very long click
 
 
-      -- Volume Up and Next Track
+      -- MultiSelect and Next Track
 	if arg == upButton then
 		if event == "MOUSE_BUTTON_PRESSED" then
 			mediaButtonStartUp = GetRunningTime()
@@ -29,50 +29,44 @@ function OnEvent(event, arg)
 	
 			if mediaButtonDurationUp >= mediaButtonDelta then
 				-- Next Track
-				OutputLogMessage("Short click (".. mediaButtonDurationUp /1000 .."s) : Next Track\n")
 				if not debug then
-					PlayMacro("Next")
+					PlayMacro("Next Track")
 				end
 			else
-				-- Volume Up
-				OutputLogMessage("Long click (".. mediaButtonDurationUp /1000 .."s) : Volume Up \n")
+				-- MultiSelect
 				if not debug then
-					PlayMacro("Volume Up")
+					PlayMacro("MultiSelect")
 				end
 			end
 		end
 
 		return	
 	
-	-- Volume Down and Previous Track
+	-- Nest and Previous Track
 	elseif arg == downButton then
 		if event == "MOUSE_BUTTON_PRESSED" then
 			mediaButtonStartDown = GetRunningTime()
 			mediaButtonDurationDown = nil
 			
-	
 		elseif event == "MOUSE_BUTTON_RELEASED" then
 			mediaButtonDurationDown  = GetRunningTime() - mediaButtonStartDown 
 	
 			if mediaButtonDurationDown >= mediaButtonDelta then
 				-- Next Track
-				OutputLogMessage("Short click (".. mediaButtonDurationDown /1000 .."s) : Previous Track\n")
 				if not debug then
-					PlayMacro("Previous")
+					PlayMacro("Previous Track")
 				end
 			else
-				-- Volume Up
-				OutputLogMessage("Long click (".. mediaButtonDurationDown /1000 .."s) : Volume Down\n")
+				-- Nest
 				if not debug then
-					PlayMacro("Volume Down")
+					PlayMacro("Nest")
 				end
 			end
 		end
 
 		return
-	
 			
-	-- Play/Pause and Mute
+	-- Unlink / Adjustment Layer
 	elseif arg == muteButton then
 		if event == "MOUSE_BUTTON_PRESSED" then
 			mediaButtonStartMute = GetRunningTime()
@@ -82,63 +76,58 @@ function OnEvent(event, arg)
 		elseif event == "MOUSE_BUTTON_RELEASED" then
 			mediaButtonDurationMute = GetRunningTime() - mediaButtonStartMute 
 			
-			if mediaButtonDurationMute < mediaButtonDelta then
-				-- Next Track
-				OutputLogMessage("Short click (".. mediaButtonDurationMute /1000 .."s) : Play-Pause\n")
+			if mediaButtonDurationMute >= mediaButtonDelta then
+				-- Add Adjustment Layer To Timline
 				if not debug then
-					PlayMacro("Play/Pause")
-				end				
+						PlayMacro("Adj Layer")
+				end			
 			else
-				-- Volume Up
-				OutputLogMessage("Long click (".. mediaButtonDurationMute /1000 .."s) : Volume Up\n")
+				-- Unlink
 				if not debug then
-					PlayMacro("ColorPicker")
+					PlayMacro("Unlink")
 				end
 			end
 		end
 
 		return
 		
-	-- Open WebStorm
+	-- Play/Pause
 	elseif arg == midButton then
 		if event == "MOUSE_BUTTON_PRESSED" then
 			midButtonStart = GetRunningTime()
 			midButtonDuration = nil
-			
 	
 		elseif event == "MOUSE_BUTTON_RELEASED" then
 			midButtonDuration = GetRunningTime() - midButtonStart 
 	
 			if midButtonDuration >= mediaButtonDelta then				
-				-- Open WebStorm
-				OutputLogMessage("Long click (".. midButtonDuration /1000 .."s) : Opening WebStorm\n")
+				-- Play/Pause
 				if not debug then
-					PlayMacro("Open WebStorm")
+					PlayMacro("Play/Pause")
 				end
 			end
 		end
 
 		return	
 		
-	-- Open Chrome
+	-- Mark Out And Tail(W)
 	elseif arg == bckButton then
 		if event == "MOUSE_BUTTON_PRESSED" then
 			bckButtonStart = GetRunningTime()
 			bckButtonDuration = nil
-			
 	
 		elseif event == "MOUSE_BUTTON_RELEASED" then
 			bckButtonDuration = GetRunningTime() - bckButtonStart 
 	
-			if bckButtonDuration >= mediaButtonDelta then				
-				-- Open Chrome
-				OutputLogMessage("Long click (".. bckButtonDuration /1000 .."s) : Opening Chrome\n")
+			if bckButtonDuration < mediaButtonDelta then				
+				-- Mark Out
 				if not debug then
-					PlayMacro("TextExtract")
+					PlayMacro("MarkOut")
 				end
 			else
+				-- W (Tail)
 				if not debug then
-					PlayMacro("Bwd")
+					PlayMacro("W")
 				end
 			end
 		end
@@ -146,51 +135,46 @@ function OnEvent(event, arg)
 		return
 	
 	
-	-- Foward and Take SS
+	-- Mark In And Top(Q)
 	elseif arg == fwdButton then
 		if event == "MOUSE_BUTTON_PRESSED" then
 			fwdButtonStart = GetRunningTime()
 			fwdButtonDuration = nil
-			
 	
 		elseif event == "MOUSE_BUTTON_RELEASED" then
 			fwdButtonDuration = GetRunningTime() - fwdButtonStart 
 	
-			if fwdButtonDuration >= mediaButtonDelta then				
-				-- Open WebStorm
-				OutputLogMessage("Long click (".. fwdButtonDuration /1000 .."s) : Take Screenshot\n")
+			if fwdButtonDuration < mediaButtonDelta then				
+				-- Mark In
 				if not debug then
-					PlayMacro("Screenshot")
+					PlayMacro("MarkIn")
 				end
 			else
 				if not debug then
-					PlayMacro("Fwd")
+					PlayMacro("Q")
 				end
 			end
 		end
 
 		return
 		
-	-- Shutdown and Open VS and Rider
+	-- Split
 	elseif arg == gButton then
 		if event == "MOUSE_BUTTON_PRESSED" then
 			gButtonStart = GetRunningTime()
-			gButtonDuration = nil
-			
+			gButtonDuration = nil			
 	
 		elseif event == "MOUSE_BUTTON_RELEASED" then
 			gButtonDuration = GetRunningTime() - gButtonStart
 	
-			if gButtonDuration <= mediaButtonDelta then
-				-- VS
-				OutputLogMessage("Short click (".. gButtonDuration /1000 .."s) : Opening Visual Studio As Admin\n")
+			if mediaButtonDelta < gButtonDeltaShutdown then
+				-- Split
 				if not debug then
-					PlayMacro("VS")
+					PlayMacro("Split")
 				end
 			else
-			       OutputLogMessage("Long click (".. gButtonDuration /1000 .."s) : Opening Rider\n")
 				if not debug then
-					PlayMacro("Open Rider")
+					PlayMacro("Trim All")
 				end
 			end
 		end
